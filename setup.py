@@ -8,7 +8,7 @@ setup(
     url='https://github.com/gerzin/pylore',
     author='Gerardo Zinno',
     author_email='zinno.gerardo.95@gmail.com',
-    version='0.0.11',
+    version='0.0.2',
     description='LOcal Rule-based Explanations',
     packages=['pylore'],
     classifiers=[
