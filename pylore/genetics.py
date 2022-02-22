@@ -48,8 +48,6 @@ class AbstractCrossoverer(ABC):
         features = np.random.randint(0, p1.shape[0], size=(2,))
 
 
-
-
 class TwoPointCrossoverer(AbstractCrossoverer):
     """
 
@@ -65,4 +63,3 @@ class TwoPointCrossoverer(AbstractCrossoverer):
         idx = np.random.randint(0, p1.shape[0], size=(2,))
         p1[idx], p2[idx] = p2[idx], p1[idx]
         pass
-
