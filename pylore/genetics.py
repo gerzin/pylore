@@ -6,13 +6,11 @@ from abc import ABC, abstractmethod
 from pylore.blackbox import AbstractBlackBoxWrapper
 from typing import Callable
 import numpy as np
-from numba import njit
 
 from pylore.distances import AbstractDistance
 
 
 class AbstractMutator(ABC):
-
     @abstractmethod
     def fit(self, data):
         """
@@ -28,7 +26,6 @@ class AbstractMutator(ABC):
 
 
 class DefaultMutator(AbstractMutator):
-
     def __init__(self):
         # separator
         pass
@@ -49,9 +46,7 @@ class AbstractCrossoverer(ABC):
 
 
 class TwoPointCrossoverer(AbstractCrossoverer):
-    """
-
-    """
+    """ """
 
     def __init__(self):
         pass

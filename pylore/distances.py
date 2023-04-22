@@ -3,7 +3,6 @@ This module contains utility functions for defining distance functions to be use
 """
 from abc import ABC, abstractmethod
 import numpy as np
-from numba import njit
 
 
 class AbstractDistance(ABC):
@@ -33,12 +32,11 @@ class NormalizedEuclideanDistance(AbstractDistance):
 
 
 class SimpleMatchDistance(AbstractDistance):
-    """
+    """ """
 
-    """
     def __call__(self, x, y, *args, **kwargs):
         dist = 0
-        for (a, b) in zip(x, y):
+        for a, b in zip(x, y):
             if a != b:
                 dist += 1
         return dist
@@ -50,6 +48,7 @@ class MixedAttributesDistance(AbstractDistance):
 
 
     """
+
     def __init__(self, sep_index: int, **kwargs):
         self.sep_index = sep_index
         self.categ_dist = SimpleMatchDistance()
@@ -61,8 +60,8 @@ class MixedAttributesDistance(AbstractDistance):
         continuous = x[s:], y[:s]
         nelem = len(x)
         return (self.sep_index / nelem) * self.categ_dist(*categorical) + (
-                (nelem - self.sep_index) / nelem) * self.neucl_dist(
-            *continuous)
+            (nelem - self.sep_index) / nelem
+        ) * self.neucl_dist(*continuous)
 
 
 # utilities
@@ -72,12 +71,3 @@ def normalize_vector(x: np.array):
         return x / norm
     else:
         return norm
-
-
-@njit
-def numba_simple_match(x, y):
-    dist = 0
-    for (a, b) in zip(x, y):
-        if a != b:
-            dist += 1
-    return dist
