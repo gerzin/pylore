@@ -25,7 +25,7 @@ setup(
     ],
     long_description=long_description,
     long_description_content_type="text/markdown",
-    install_requires=["numpy", "numba", "scikit-learn"],
+    install_requires=["numpy", "scikit-learn"],
     extras_require={
         "dev": [
             "pytest > 3.7",
