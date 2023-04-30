@@ -1,5 +1,6 @@
 """
-This module contains utility functions for defining distance functions to be used by LORE's fitness function
+This module contains utility functions for defining distance functions
+to be used by LORE's fitness function
 """
 from abc import ABC, abstractmethod
 import numpy as np
@@ -21,16 +22,6 @@ class EuclideanDistance(AbstractDistance):
         return np.linalg.norm(diff)
 
 
-class NormalizedEuclideanDistance(AbstractDistance):
-    """
-    Normalized the vectors and computes the Euclidean Distance between them.
-    """
-
-    def __call__(self, x: np.array, y: np.array, *args, **kwargs):
-        diff = normalize_vector(x - y)
-        return np.linalg.norm(diff)
-
-
 class SimpleMatchDistance(AbstractDistance):
     """ """
 
@@ -42,32 +33,14 @@ class SimpleMatchDistance(AbstractDistance):
         return dist
 
 
-class MixedAttributesDistance(AbstractDistance):
-    """
-    Computes the distance between two instances when these are composed of both categorical and continuous attributes.
+PREDEFINED_DISTANCES = {
+    "euclidean": EuclideanDistance,
+    "simplematch": SimpleMatchDistance,
+}
 
 
-    """
-
-    def __init__(self, sep_index: int, **kwargs):
-        self.sep_index = sep_index
-        self.categ_dist = SimpleMatchDistance()
-        self.neucl_dist = NormalizedEuclideanDistance()
-
-    def __call__(self, x, y, *args, **kwargs):
-        s = self.sep_index
-        categorical = x[:s], y[:s]
-        continuous = x[s:], y[:s]
-        nelem = len(x)
-        return (self.sep_index / nelem) * self.categ_dist(*categorical) + (
-            (nelem - self.sep_index) / nelem
-        ) * self.neucl_dist(*continuous)
-
-
-# utilities
-def normalize_vector(x: np.array):
-    norm = np.dot(np.sqrt(x))
-    if norm:
-        return x / norm
-    else:
-        return norm
+def dist_from_str(distance: str):
+    try:
+        return PREDEFINED_DISTANCES[distance]
+    except KeyError:
+        raise KeyError(f"{distance} not found in predefined distances")

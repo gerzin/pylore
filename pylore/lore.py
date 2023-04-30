@@ -1,10 +1,7 @@
-import numpy as np
-
 from pylore.blackbox import AbstractBlackBoxWrapper
-from pylore.distances import AbstractDistance
-from sklearn import tree
-
-from pylore.genetics import genetic_neighborhood
+from pylore.distances import AbstractDistance, dist_from_str
+from sklearn.tree import DecisionTreeClassifier
+from typing import Union
 
 
 class LORE:
@@ -12,12 +9,14 @@ class LORE:
         self,
         bb: AbstractBlackBoxWrapper,
         neighbors: int,
-        distance: AbstractDistance,
+        distance: Union[AbstractDistance, str],
         **kwargs
     ):
         self.bb_ = bb
         self.neighbors_ = neighbors
-        self.distance_ = distance
+        self.distance_ = (
+            distance if type(distance) is not str else dist_from_str(distance)
+        )
 
         # default values from the paper
         self.generations_ = kwargs.get("generations", 10)
@@ -26,7 +25,7 @@ class LORE:
 
         # instantiate the classifier
         self.random_state_ = kwargs.get("random_state")
-        self.clf_ = tree.DecisionTreeClassifier(random_state=self.random_state_)
+        self.clf_ = DecisionTreeClassifier(random_state=self.random_state_)
 
     @property
     def black_box(self):

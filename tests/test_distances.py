@@ -1,5 +1,15 @@
-from pylore.distances import EuclideanDistance
+from pylore.distances import EuclideanDistance, dist_from_str
 import numpy as np
+import pytest
+
+
+def test_dist_from_str():
+    assert type(dist_from_str("euclidean")) is EuclideanDistance
+
+
+def test_dist_from_str_error():
+    with pytest.raises(KeyError):
+        _ = dist_from_str("jibberishasdjkl")
 
 
 def test_euclidean_distance():
