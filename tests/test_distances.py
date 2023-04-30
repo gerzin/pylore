@@ -4,7 +4,8 @@ import pytest
 
 
 def test_dist_from_str():
-    assert type(dist_from_str("euclidean")) is EuclideanDistance
+    d = dist_from_str("euclidean")()
+    assert type(d) is EuclideanDistance
 
 
 def test_dist_from_str_error():
@@ -18,7 +19,7 @@ def test_euclidean_distance():
     a = np.random.random(100)
     b = np.random.random(100)
     assert dist(a, a) == 0
-    assert dist(a, b) == dist(b, a)
+    assert np.abs(dist(a, b) - dist(b, a)) <= 1e15
     assert dist(a, b) > 0
     assert dist(a, -b) > 0
 

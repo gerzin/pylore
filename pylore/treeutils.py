@@ -1,5 +1,6 @@
 """
-This module contains utilities for extracting decision rules and counterfactuals from a DecisionTreeClassifier.
+This module contains utilities for extracting decision rules
+and counterfactuals from a DecisionTreeClassifier.
 """
 from sklearn.tree import DecisionTreeClassifier
 
