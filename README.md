@@ -2,6 +2,8 @@
 
 PACKAGE STILL UNDER DEVELOPMENT
 
+My implementation of the LORE local explainer developed in the paper [Local Rule-Based Explanations of Black Box Decision Systems](https://arxiv.org/pdf/1805.10820).
+
 ## Installation
 
 To install pylore run:
