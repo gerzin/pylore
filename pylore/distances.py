@@ -43,4 +43,4 @@ def dist_from_str(distance: str):
     try:
         return PREDEFINED_DISTANCES[distance]
     except KeyError:
-        raise KeyError(f"{distance} not found in predefined distances")
+        raise KeyError(f"{distance} not found among the predefined distances")
