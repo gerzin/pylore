@@ -1,7 +1,8 @@
 from pylore.blackbox import AbstractBlackBoxWrapper
 from pylore.distances import AbstractDistance, dist_from_str
 from sklearn.tree import DecisionTreeClassifier
-from typing import Union
+from typing import Union, Callable
+import numpy as np
 
 
 class LORE:
@@ -9,7 +10,9 @@ class LORE:
         self,
         bb: AbstractBlackBoxWrapper,
         neighbors: int,
-        distance: Union[AbstractDistance, str],
+        distance: Union[
+            AbstractDistance, Callable[[np.array, np.array], np.number], str
+        ],
         **kwargs
     ):
         self.bb_ = bb
@@ -30,6 +33,10 @@ class LORE:
     @property
     def black_box(self):
         return self.bb_
+
+    @property
+    def random_state(self):
+        return self.random_state_
 
     def __call__(self, x, *args, **kwargs):
         pass

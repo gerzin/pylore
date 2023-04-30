@@ -18,8 +18,7 @@ class EuclideanDistance(AbstractDistance):
     """
 
     def __call__(self, x: np.array, y: np.array, *args, **kwargs):
-        diff = x - y
-        return np.linalg.norm(diff)
+        return np.linalg.norm(x - y)
 
 
 class SimpleMatchDistance(AbstractDistance):

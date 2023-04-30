@@ -5,7 +5,7 @@ import pytest
 
 def test_dist_from_str():
     d = dist_from_str("euclidean")()
-    assert type(d) is EuclideanDistance
+    assert isinstance(d, EuclideanDistance)
 
 
 def test_dist_from_str_error():

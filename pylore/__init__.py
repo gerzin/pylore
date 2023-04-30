@@ -1,3 +1,3 @@
 from pylore.lore import LORE
 
-LORE = LORE
+__all__ = [LORE.__name__]
