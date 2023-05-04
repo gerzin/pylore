@@ -32,7 +32,7 @@ class SimpleMatchDistance(AbstractDistance):
         return dist
 
 
-PREDEFINED_DISTANCES = {
+__PREDEFINED_DISTANCES = {
     "euclidean": EuclideanDistance,
     "simplematch": SimpleMatchDistance,
 }
@@ -40,6 +40,6 @@ PREDEFINED_DISTANCES = {
 
 def dist_from_str(distance: str):
     try:
-        return PREDEFINED_DISTANCES[distance]
+        return __PREDEFINED_DISTANCES[distance]
     except KeyError:
         raise KeyError(f"{distance} not found among the predefined distances")
