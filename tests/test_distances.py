@@ -7,8 +7,6 @@ def test_dist_from_str():
     d = dist_from_str("euclidean")()
     assert isinstance(d, EuclideanDistance)
 
-
-def test_dist_from_str_error():
     with pytest.raises(KeyError):
         _ = dist_from_str("jibberishasdjkl")
 
