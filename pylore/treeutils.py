@@ -40,7 +40,6 @@ def extract_decision_rule(
         feat_node = dt.feature[node]
 
         if feat_node == _tree.TREE_UNDEFINED:
-            # append the string into rules so it can be returned.
             rules.append(rule)
             return
 

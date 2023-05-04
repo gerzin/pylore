@@ -1,6 +1,13 @@
+import pytest
 from pylore import LORE
+from sklearn.linear_model import LogisticRegression
 
 
-def test_instantiation():
-    lore = LORE()
+@pytest.fixture
+def dummy_model():
+    return LogisticRegression()
+
+
+def test_instantiation(dummy_model):
+    lore = LORE(dummy_model, 100)
     assert lore

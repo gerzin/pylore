@@ -20,8 +20,7 @@ def test_euclidean_distance():
     b = np.random.random(100)
     assert dist(a, a) == 0
     assert np.abs(dist(a, b) - dist(b, a)) <= 1e15
-    assert dist(a, b) > 0
-    assert dist(a, -b) > 0
+    assert dist(a, b) > 0 and dist(a, -b) > 0
 
     x = np.array([1, 0, -5])
     y = np.array([-3, 2, -1])
