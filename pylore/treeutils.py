@@ -16,7 +16,7 @@ def extract_decision_rule(
     Arguments:
     * dt - decision tree from which the decision rule needs to be extracted.
     * x - instance from which to extract the decision rule.
-    * features_names
+    * features_names - list containing the name of the features.
 
     Returns:
     * dr - decision rule as a str of the form '(X[0] > 2.0) AND (X[4] > -2.0)'
