@@ -3,6 +3,7 @@ from pylore.distances import dist_from_str
 from sklearn.tree import DecisionTreeClassifier
 from typing import Union, Callable
 import numpy as np
+from pylore.treeutils import extract_decision_rule, extract_counterfactuals
 
 
 class LORE:
@@ -18,7 +19,9 @@ class LORE:
         self.bb_ = black_box
         self.neighbors_ = neighbors
         self.distance_ = (
-            distance if type(distance) is not str else dist_from_str(distance)
+            distance
+            if not isinstance(distance, str)
+            else dist_from_str(distance)
         )
 
         # default values from the paper
@@ -42,5 +45,11 @@ class LORE:
     def neighbors(self):
         return self.neighbors_
 
+    @property
+    def explainer(self):
+        return self.clf_
+
     def __call__(self, x, *args, **kwargs):
-        pass
+        decision_rule = extract_decision_rule(self.explainer, x, **kwargs)
+        counterfactual = extract_counterfactuals(self.clf_, decision_rule, x)
+        return decision_rule, counterfactual
