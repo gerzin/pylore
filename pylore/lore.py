@@ -1,5 +1,5 @@
 from pylore.blackbox import AbstractBlackBoxWrapper
-from pylore.distances import AbstractDistance, dist_from_str
+from pylore.distances import EuclideanDistance, dist_from_str
 from sklearn.tree import DecisionTreeClassifier
 from typing import Union, Callable
 import numpy as np
@@ -11,8 +11,8 @@ class LORE:
         bb: AbstractBlackBoxWrapper,
         neighbors: int,
         distance: Union[
-            AbstractDistance, Callable[[np.array, np.array], np.number], str
-        ],
+            Callable[[np.array, np.array], np.number], str
+        ] = EuclideanDistance,
         **kwargs
     ):
         self.bb_ = bb
