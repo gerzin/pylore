@@ -1,4 +1,3 @@
-# flake8: noqa
 """
 This module contains utilities for extracting decision rules
 and counterfactuals from a DecisionTreeClassifier.
@@ -46,12 +45,18 @@ def extract_decision_rule(
             return
 
         feat_name = features_names[feat_node]
-        thrs_val = threshold_values[feat_node]
+        threshold_val = threshold_values[feat_node]
 
-        if x[features_names.index(feat_name)] <= thrs_val:
-            traverse(dt.children_left[node], rule + f"({feat_name} <= {thrs_val}) AND ")
+        if x[features_names.index(feat_name)] <= threshold_val:
+            traverse(
+                dt.children_left[node],
+                rule + f"({feat_name} <= {threshold_val}) AND ",
+            )
         else:
-            traverse(dt.children_right[node], rule + f"({feat_name} > {thrs_val}) AND ")
+            traverse(
+                dt.children_right[node],
+                rule + f"({feat_name} > {threshold_val}) AND ",
+            )
 
     traverse(0, "")
 
