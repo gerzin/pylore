@@ -40,7 +40,7 @@ def extract_decision_rule(
         feat_node = dt.feature[node]
 
         if feat_node == _tree.TREE_UNDEFINED:
-            rules.append(rule)
+            rules.append(rule[:-5])  # remove the last AND
             return
 
         feat_name = features_names[feat_node]
@@ -59,7 +59,7 @@ def extract_decision_rule(
 
     traverse(0, "")
 
-    return rules[0][:-5]
+    return rules[0]
 
 
 def extract_counterfactuals(

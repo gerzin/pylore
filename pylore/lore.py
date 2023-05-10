@@ -16,6 +16,14 @@ class LORE:
         ] = "euclidean",  # noqa: E501
         **kwargs
     ):
+        """AAA
+
+        Keywords:
+        * generations: int -
+        * crossover_prob: float -
+        * mutation_prob: float -
+        * random_state -
+        """
         self.bb_ = black_box
         self.neighbors_ = neighbors
         self.distance_ = (
@@ -51,5 +59,10 @@ class LORE:
 
     def __call__(self, x, *args, **kwargs):
         decision_rule = extract_decision_rule(self.explainer, x, **kwargs)
-        counterfactual = extract_counterfactuals(self.clf_, decision_rule, x)
-        return decision_rule, counterfactual
+        if kwargs.get("counterfactuals", True):
+            counterfactual = extract_counterfactuals(
+                self.clf_, decision_rule, x
+            )
+            return decision_rule, counterfactual
+        else:
+            return decision_rule

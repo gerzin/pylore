@@ -9,7 +9,7 @@ import numpy as np
 class AbstractDistance(ABC):
     @abstractmethod
     def __call__(self, x, y, *args, **kwargs):
-        pass
+        raise NotImplementedError
 
 
 class EuclideanDistance(AbstractDistance):

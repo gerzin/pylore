@@ -3,3 +3,4 @@ black
 pytest
 pre-commit
 flake8
+coverage
