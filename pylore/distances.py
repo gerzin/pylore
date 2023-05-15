@@ -2,18 +2,12 @@
 This module contains utility functions for defining distance functions
 to be used by LORE's fitness function
 """
-from abc import ABC, abstractmethod
 import numpy as np
 
 
-class AbstractDistance(ABC):
-    @abstractmethod
-    def __call__(self, x, y, mask=None):
-        raise NotImplementedError
-
-
-def LOREDistance(AbstractDistance):
+class LOREDistance:
     def __init__(self, categorical_mask, **kwargs):
+        """ """
         if isinstance(categorical_mask, np.ndarray):
             self.categorical_mask = categorical_mask.astype(bool)
         elif isinstance(categorical_mask, list):
@@ -45,4 +39,6 @@ def LOREDistance(AbstractDistance):
         num_mask = ~cat_mask
         return self.cat_weight * self.simple_match(
             x[cat_mask], y[cat_mask]
-        ) + self.num_weight * normalized_eucliden(x[num_mask], y[num_mask])
+        ) + self.num_weight * self.normalized_eucliden(
+            x[num_mask], y[num_mask]
+        )

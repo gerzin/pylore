@@ -31,8 +31,6 @@ def extract_decision_rule(
     else:
         assert len(features_names) == dt.feature.shape[0]
 
-    threshold_values = dt.threshold
-
     def traverse(node: int, rule: str):
         """
         Recursively traverse dt and build up the rule.
@@ -44,7 +42,7 @@ def extract_decision_rule(
             return
 
         feat_name = features_names[feat_node]
-        threshold_val = threshold_values[feat_node]
+        threshold_val = dt.threshold[feat_node]
 
         if x[features_names.index(feat_name)] <= threshold_val:
             traverse(
