@@ -1,7 +1,6 @@
-from pylore.blackbox import AbstractBlackBoxWrapper
-from pylore.distances import dist_from_str
+from pylore.blackbox import AbstractBlackBox
 from sklearn.tree import DecisionTreeClassifier
-from typing import Union, Callable
+from typing import Callable
 import numpy as np
 from pylore.treeutils import extract_decision_rule, extract_counterfactuals
 
@@ -9,11 +8,9 @@ from pylore.treeutils import extract_decision_rule, extract_counterfactuals
 class LORE:
     def __init__(
         self,
-        black_box: AbstractBlackBoxWrapper,
+        black_box: AbstractBlackBox,
         neighbors: int,
-        distance: Union[
-            Callable[[np.array, np.array], np.number], str
-        ] = "euclidean",  # noqa: E501
+        distance: Callable[[np.array, np.array], np.number],
         **kwargs,
     ):
         """
@@ -26,11 +23,7 @@ class LORE:
         """
         self.bb_ = black_box
         self.neighbors_ = neighbors
-        self.distance_ = (
-            distance
-            if not isinstance(distance, str)
-            else dist_from_str(distance)
-        )
+        self.distance_ = distance
 
         # default values from the paper
         self.generations_ = kwargs.get("generations", 10)

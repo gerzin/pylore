@@ -12,42 +12,37 @@ class AbstractDistance(ABC):
         raise NotImplementedError
 
 
-class EuclideanDistance(AbstractDistance):
-    """
-    Computes the Euclidean Distance between two vectors.
-    """
+def LOREDistance(AbstractDistance):
+    def __init__(self, categorical_mask, **kwargs):
+        if isinstance(categorical_mask, np.ndarray):
+            self.categorical_mask = categorical_mask.astype(bool)
+        elif isinstance(categorical_mask, list):
+            self.categorical_mask = np.array(categorical_mask, dtype=bool)
 
-    def __call__(self, x: np.array, y: np.array, mask=None):
+        if np.all(self.categorical_mask):
+            self.__call__ = self.simple_match
+        elif not np.any(self.categorical_mask):
+            self.__call__ = self.normalized_eucliden
+        else:
+            m = len(self.categorical_mask)
+            tot_feat = len(self.categorical_mask)
+            cat_fet = np.sum(self.categorical_mask)
+            num_feat = tot_feat - cat_fet
+
+            self.cat_weight = tot_feat / m
+            self.num_weight = num_feat / m
+
+    @classmethod
+    def simple_match(cls, x, y):
+        return np.sum(x != y)
+
+    @classmethod
+    def normalized_eucliden(cls, x, y):
         return np.linalg.norm(x - y)
 
-
-class SimpleMatchDistance(AbstractDistance):
-    """Simple match distance.
-
-    Counts the number of position in which two vectors differ.
-    """
-
-    def __call__(self, x, y, mask=None):
-        mask = mask if mask else np.full_like(x, True)
-        # Get the categorical feature indices
-        categorical_indices = np.where(mask)[0]
-
-        # Compute the simple match distance for categorical features
-        categorical_distance = np.sum(
-            x[categorical_indices] != y[categorical_indices]
-        )
-
-        return categorical_distance
-
-
-__PREDEFINED_DISTANCES = {
-    "euclidean": EuclideanDistance,
-    "simplematch": SimpleMatchDistance,
-}
-
-
-def dist_from_str(distance: str):
-    try:
-        return __PREDEFINED_DISTANCES[distance]
-    except KeyError:
-        raise KeyError(f"{distance} not found among the predefined distances")
+    def __call__(self, x, y):
+        cat_mask = self.categorical_mask
+        num_mask = ~cat_mask
+        return self.cat_weight * self.simple_match(
+            x[cat_mask], y[cat_mask]
+        ) + self.num_weight * normalized_eucliden(x[num_mask], y[num_mask])

@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 
 
-class AbstractBlackBoxWrapper(ABC):
+class AbstractBlackBox(ABC):
     """
     Interface for using a black box with LORE.
 

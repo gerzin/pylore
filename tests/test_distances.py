@@ -1,18 +1,9 @@
-from pylore.distances import EuclideanDistance, dist_from_str
+from pylore.distances import LOREDistance
 import numpy as np
-import pytest
-
-
-def test_dist_from_str():
-    d = dist_from_str("euclidean")()
-    assert isinstance(d, EuclideanDistance)
-
-    with pytest.raises(KeyError):
-        _ = dist_from_str("jibberishasdjkl")
 
 
 def test_euclidean_distance():
-    dist = EuclideanDistance()
+    dist = LOREDistance().euclidean_distance
 
     a = np.random.random(100)
     b = np.random.random(100)

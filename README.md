@@ -17,7 +17,8 @@ $ pip install pylore
 ```python
 from pylore import LORE
 
-LORE()
+dist = LoreDistance([True, True, False, True, False])
+LORE(dist)
 ```
 
 ## Developing PyLORE
