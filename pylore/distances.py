@@ -8,7 +8,7 @@ import numpy as np
 
 class AbstractDistance(ABC):
     @abstractmethod
-    def __call__(self, x, y, *args, **kwargs):
+    def __call__(self, x, y, mask=None):
         raise NotImplementedError
 
 
@@ -17,19 +17,27 @@ class EuclideanDistance(AbstractDistance):
     Computes the Euclidean Distance between two vectors.
     """
 
-    def __call__(self, x: np.array, y: np.array, *args, **kwargs):
+    def __call__(self, x: np.array, y: np.array, mask=None):
         return np.linalg.norm(x - y)
 
 
 class SimpleMatchDistance(AbstractDistance):
-    """ """
+    """Simple match distance.
 
-    def __call__(self, x, y, *args, **kwargs):
-        dist = 0
-        for a, b in zip(x, y):
-            if a != b:
-                dist += 1
-        return dist
+    Counts the number of position in which two vectors differ.
+    """
+
+    def __call__(self, x, y, mask=None):
+        mask = mask if mask else np.full_like(x, True)
+        # Get the categorical feature indices
+        categorical_indices = np.where(mask)[0]
+
+        # Compute the simple match distance for categorical features
+        categorical_distance = np.sum(
+            x[categorical_indices] != y[categorical_indices]
+        )
+
+        return categorical_distance
 
 
 __PREDEFINED_DISTANCES = {

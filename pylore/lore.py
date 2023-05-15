@@ -14,7 +14,7 @@ class LORE:
         distance: Union[
             Callable[[np.array, np.array], np.number], str
         ] = "euclidean",  # noqa: E501
-        **kwargs
+        **kwargs,
     ):
         """
 
@@ -65,13 +65,21 @@ class LORE:
         generations = kwargs.get("generations", self.generations_)
 
         population = np.repeat(x[np.newaxis, ...], neighbors, axis=0)
+
+        def evaluate_population(population):
+            pass
+
         for _ in range(generations):
             print(population)
             print(black_box)
-            pass
+            evaluate_population(population)
+
+        return population
 
     def build_decision_tree(dataset):
-        ...
+        dt = DecisionTreeClassifier()
+        dt.fit(dataset)
+        return dt
 
     def __call__(self, x, *args, **kwargs):
         z_eq = self.generate_neighbors(x, lambda x: x)
