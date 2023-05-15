@@ -16,7 +16,7 @@ class LORE:
         ] = "euclidean",  # noqa: E501
         **kwargs
     ):
-        """AAA
+        """
 
         Keywords:
         * generations: int -
@@ -57,12 +57,27 @@ class LORE:
     def explainer(self):
         return self.clf_
 
+    def generate_neighbors(self, x, fitness, **kwargs):
+        """Generate the genetic neighbors."""
+
+        black_box = kwargs.get("black_box", self.black_box)
+        neighbors = kwargs.get("neighbors", self.neighbors)
+        generations = kwargs.get("generations", self.generations_)
+
+        population = np.repeat(x[np.newaxis, ...], neighbors, axis=0)
+        for _ in range(generations):
+            print(population)
+            print(black_box)
+            pass
+
+    def build_decision_tree(dataset):
+        ...
+
     def __call__(self, x, *args, **kwargs):
+        z_eq = self.generate_neighbors(x, lambda x: x)
+        z_neq = self.generate_neighbors(x, lambda x: x)
+        z = np.concatenate([z_eq, z_neq])
+        self.clf_ = self.build_decision_tree(z)
         decision_rule = extract_decision_rule(self.explainer, x, **kwargs)
-        if kwargs.get("counterfactuals", True):
-            counterfactual = extract_counterfactuals(
-                self.clf_, decision_rule, x
-            )
-            return decision_rule, counterfactual
-        else:
-            return decision_rule
+        counterfactuals = extract_counterfactuals(self.clf_, decision_rule)
+        return decision_rule, counterfactuals

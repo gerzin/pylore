@@ -15,7 +15,7 @@ $ pip install pylore
 ## Usage
 
 ```python
-from pylore.lore import LORE
+from pylore import LORE
 
 LORE()
 ```
