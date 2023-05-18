@@ -24,15 +24,12 @@ class LORE:
         self.bb_ = black_box
         self.neighbors_ = neighbors
         self.distance_ = distance
+        self.surrogate_ = None
 
         # default values from the paper
         self.generations_ = kwargs.get("generations", 10)
         self.crossover_prob_ = kwargs.get("crossover_prob", 0.5)
         self.mutation_prob_ = kwargs.get("mutation_prob", 0.2)
-
-        # instantiate the classifier
-        self.random_state_ = kwargs.get("random_state")
-        self.clf_ = DecisionTreeClassifier(random_state=self.random_state_)
 
     @property
     def black_box(self):
@@ -47,8 +44,8 @@ class LORE:
         return self.neighbors_
 
     @property
-    def explainer(self):
-        return self.clf_
+    def surrogate(self):
+        return self.surrogate_
 
     def generate_neighbors(self, x, fitness, **kwargs):
         """Generate the genetic neighbors."""
@@ -78,7 +75,9 @@ class LORE:
         z_eq = self.generate_neighbors(x, lambda x: x)
         z_neq = self.generate_neighbors(x, lambda x: x)
         z = np.concatenate([z_eq, z_neq])
-        self.clf_ = self.build_decision_tree(z)
-        decision_rule = extract_decision_rule(self.explainer, x, **kwargs)
-        counterfactuals = extract_counterfactuals(self.clf_, decision_rule)
+        self.surrogate_ = self.build_decision_tree(z)
+        decision_rule = extract_decision_rule(self.surrogate_, x, **kwargs)
+        counterfactuals = extract_counterfactuals(
+            self.surrogate_, decision_rule
+        )
         return decision_rule, counterfactuals

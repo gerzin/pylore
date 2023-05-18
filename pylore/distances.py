@@ -12,6 +12,10 @@ class LOREDistance:
             self.categorical_mask = categorical_mask.astype(bool)
         elif isinstance(categorical_mask, list):
             self.categorical_mask = np.array(categorical_mask, dtype=bool)
+        else:
+            raise TypeError(
+                "Unsupported input type. Only lists and NumPy arrays are supported."  # noqa
+            )
 
         if np.all(self.categorical_mask):
             self.__call__ = self.simple_match
