@@ -1,3 +1,7 @@
+"""
+This is the main module where the LORE local explainer
+is implemented.
+"""
 from pylore.blackbox import AbstractBlackBox
 from sklearn.tree import DecisionTreeClassifier
 from typing import Callable

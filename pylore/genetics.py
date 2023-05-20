@@ -6,15 +6,51 @@ import numpy as np
 from numba import njit
 
 
+@njit(cache=True)
+def mutator(matrix, num_features, categorical_mask):
+    num_samples, num_features_orig = matrix.shape
+
+    # Generate random indices to select features to change
+    change_indices = np.random.choice(
+        num_features_orig, size=num_features, replace=False
+    )
+
+    # Create a copy of the matrix to store the mutated samples
+    mutated_matrix = np.copy(matrix)
+
+    for sample_idx in range(num_samples):
+        for feature_idx in change_indices:
+            # Check if the feature is categorical or continuous
+            if categorical_mask[feature_idx]:
+                # If categorical, randomly select a new value
+                # based on the feature probability
+                new_value = np.random.choice(np.unique(matrix[:, feature_idx]))
+            else:
+                # If continuous, generate a new value
+                # from the feature distribution
+                feature_values = matrix[:, feature_idx]
+                feature_mean = np.mean(feature_values)
+                feature_std = np.std(feature_values)
+                new_value = np.random.normal(
+                    loc=feature_mean, scale=feature_std
+                )
+
+            # Assign the new value to the mutated sample
+            mutated_matrix[sample_idx, feature_idx] = new_value
+
+    return mutated_matrix
+
+
 class Mutator:
-    def __init__(self, pm, K):
+    def __init__(self, pm, K, categorical_mask=None):
         self.pm_ = pm
         self.K_ = K
+        self.categorical_mask = categorical_mask
 
     def fit(self, data):
         pass
 
-    def __call__(self, x, *args, **kwargs):
+    def __call__(self, *args, **kwargs):
         pass
 
 
