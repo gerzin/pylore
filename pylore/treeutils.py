@@ -8,7 +8,7 @@ from typing import Union
 
 def extract_decision_rule(
     dt: Union[DecisionTreeClassifier, _tree.Tree], x, features_names=None
-):
+) -> str:
     """Extract the rule which leas to a particular prediction.
 
 
@@ -31,8 +31,6 @@ def extract_decision_rule(
     else:
         assert len(features_names) == dt.feature.shape[0]
 
-    threshold_values = dt.threshold
-
     def traverse(node: int, rule: str):
         """
         Recursively traverse dt and build up the rule.
@@ -40,11 +38,11 @@ def extract_decision_rule(
         feat_node = dt.feature[node]
 
         if feat_node == _tree.TREE_UNDEFINED:
-            rules.append(rule)
+            rules.append(rule[:-5])  # remove the last AND
             return
 
         feat_name = features_names[feat_node]
-        threshold_val = threshold_values[feat_node]
+        threshold_val = dt.threshold[feat_node]
 
         if x[features_names.index(feat_name)] <= threshold_val:
             traverse(
@@ -59,8 +57,16 @@ def extract_decision_rule(
 
     traverse(0, "")
 
-    return rules[0][:-5]
+    return rules[0]
 
 
-def counterfactuals():
-    pass
+def extract_counterfactuals(
+    dt: Union[DecisionTreeClassifier, _tree.Tree],
+    rule: Union[str, list[str]],
+    x,
+):
+    if isinstance(dt, DecisionTreeClassifier):
+        dt = dt.tree_
+
+    if isinstance(rule, str):
+        rule = rule.split("  AND  ")

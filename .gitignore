@@ -155,4 +155,8 @@ cython_debug/
 .vscode
 
 # Development Notebooks
-notebooks/development
+notebooks/development/*
+
+# Under notebook/ allow only the notebooks to be uploaded.
+notebooks/*
+!notebooks/*.ipynb
