@@ -1,5 +1,17 @@
 from pylore.distances import LOREDistance
 import numpy as np
+import pandas as pd
+import pytest
+
+
+@pytest.fixture
+def mixed_random_dataset():
+    df = pd.DataFrame()
+    df["A"] = np.random.randint(0, 10, size=(10,))
+    df["B"] = "Ciao"
+    df["C"] = np.random.randint(0, 10, (10,))
+    df["D"] = "Cane"
+    return df
 
 
 def test_euclidean_distance():
@@ -35,5 +47,13 @@ def test_simplematch_distance():
     assert dist(e, f) == len(e)
 
 
-def test_combined_distance():
-    assert True
+def test_combined_distance(mixed_random_dataset):
+    dist = LOREDistance(mixed_random_dataset)
+
+    assert len(mixed_random_dataset) > 3
+    x = mixed_random_dataset.iloc[0].to_numpy()
+    y = mixed_random_dataset.iloc[1].to_numpy()
+    if not (x == y).all():
+        assert dist(x, y) > 0
+    else:
+        assert dist(x, y) == 0
