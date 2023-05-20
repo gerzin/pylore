@@ -3,17 +3,27 @@ This module contains utility functions for defining distance functions
 to be used by LORE's fitness function
 """
 import numpy as np
+import pandas as pd
 
 
 class LOREDistance:
-    def __init__(self, categorical_mask, **kwargs):
+    def __init__(self, categorical_mask=None, **kwargs):
         """ """
+
         if isinstance(categorical_mask, np.ndarray):
             self.categorical_mask = categorical_mask.astype(bool)
         elif isinstance(categorical_mask, list):
             self.categorical_mask = np.array(categorical_mask, dtype=bool)
+        elif isinstance(categorical_mask, pd.DataFrame):
+            # automatically extract the mask from a DataFrame
+            object_cols = categorical_mask.select_dtypes(
+                include=["object"]
+            ).columns
+            self.categorical_mask = categorical_mask.columns.isin(object_cols)
         else:
-            raise TypeError("Only lists and NumPy arrays are supported.")
+            raise TypeError(
+                "Only lists, NumPy arrays are supported and Dataframes"
+            )
 
         if np.all(self.categorical_mask):
             self.__call__ = self.simple_match
