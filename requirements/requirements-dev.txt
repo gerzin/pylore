@@ -1,0 +1,6 @@
+-r requirements.txt
+black
+pytest
+pre-commit
+flake8
+coverage
