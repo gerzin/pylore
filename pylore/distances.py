@@ -4,11 +4,38 @@ to be used by LORE's fitness function
 """
 import numpy as np
 import pandas as pd
+from numba import njit
+
+
+@njit
+def simple_match_distance(x, y):
+    """Compute the simple match distance.
+
+    Compute the SMD computed as 1-SMC with SMC=#matching attr./#tot attr.
+    """
+    return 1 - np.sum(x == y) / len(x)
+
+
+@njit
+def normalized_square_eucludean_distance(x, y, eps=1e-8):
+    """Compute the normalized square euclidean distance.
+
+    https://reference.wolfram.com/language/ref/NormalizedSquaredEuclideanDistance.html
+    """
+    var_x1 = np.var(x, keepdims=True)
+    var_x2 = np.var(y, keepdims=True)
+
+    ned_2 = 0.5 * (np.var(x - y, keepdims=True) / (var_x1 + var_x2 + eps))
+    return ned_2
 
 
 class LOREDistance:
     def __init__(self, categorical_mask=None, **kwargs):
-        """ """
+        """
+        Arguments:
+        ---
+        * categorical_mask
+        """
 
         if isinstance(categorical_mask, np.ndarray):
             self.categorical_mask = categorical_mask.astype(bool)
@@ -22,13 +49,16 @@ class LOREDistance:
             self.categorical_mask = categorical_mask.columns.isin(object_cols)
         else:
             raise TypeError(
-                "Only lists, NumPy arrays are supported and Dataframes"
+                "Only lists, NumPy arrays and Dataframes are supported"
             )
+        self.numerical_mask = ~self.categorical_mask
 
         if np.all(self.categorical_mask):
-            self.__call__ = self.simple_match
+            self.__call__ = lambda self, x, y: simple_match_distance(x, y)
         elif not np.any(self.categorical_mask):
-            self.__call__ = self.normalized_eucliden
+            self.__call__ = (
+                lambda self, x, y: normalized_square_eucludean_distance(x, y)
+            )
         else:
             m = len(self.categorical_mask)
             tot_feat = len(self.categorical_mask)
@@ -38,19 +68,9 @@ class LOREDistance:
             self.cat_weight = tot_feat / m
             self.num_weight = num_feat / m
 
-    @classmethod
-    def simple_match(cls, x, y):
-        return np.sum(x != y)
-
-    @classmethod
-    def normalized_eucliden(cls, x, y):
-        return np.linalg.norm(x - y)
-
     def __call__(self, x, y):
-        cat_mask = self.categorical_mask
-        num_mask = ~cat_mask
-        return self.cat_weight * self.simple_match(
-            x[cat_mask], y[cat_mask]
-        ) + self.num_weight * self.normalized_eucliden(
-            x[num_mask], y[num_mask]
+        return self.cat_weight * simple_match_distance(
+            x[self.categorical_mask], y[self.categorical_mask]
+        ) + self.num_weight * normalized_square_eucludean_distance(
+            x[self.numerical_mask], y[self.numerical_mask]
         )

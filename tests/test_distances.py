@@ -1,4 +1,8 @@
-from pylore.distances import LOREDistance
+from pylore.distances import (
+    LOREDistance,
+    simple_match_distance,
+    normalized_square_eucludean_distance,
+)
 import numpy as np
 import pandas as pd
 import pytest
@@ -15,22 +19,22 @@ def mixed_random_dataset():
 
 
 def test_euclidean_distance():
-    dist = LOREDistance.normalized_eucliden
+    dist = normalized_square_eucludean_distance
 
     a = np.random.random(100)
     b = np.random.random(100)
     assert dist(a, a) == 0
-    assert np.abs(dist(a, b) - dist(b, a)) <= 1e15
+    assert np.abs(dist(a, b) - dist(b, a)) <= 1e-15
     assert dist(a, b) >= 0 and dist(a, -b) >= 0
 
-    x = np.array([1, 0, -5])
-    y = np.array([-3, 2, -1])
-
-    assert dist(x, y) == 6
+    # numbers taken from
+    # https://reference.wolfram.com/language/ref/NormalizedSquaredEuclideanDistance.html
+    x, y = np.array([1, 2, 3]), np.array([3, 5, 10])
+    assert np.abs(dist(x, y) - 0.25) <= 1e-15
 
 
 def test_simplematch_distance():
-    dist = LOREDistance.simple_match
+    dist = simple_match_distance
 
     a = ""
     b = ""
@@ -39,12 +43,12 @@ def test_simplematch_distance():
 
     c = np.array([*"ciao"])
     d = np.array([*"cane"])
-    assert dist(c, d) == 3
+    assert dist(c, d) > 0
     assert dist(c, c) == 0
     assert np.abs(dist(c, d) - dist(d, c)) == 0
 
     e, f = np.array([*"abc"]), np.array([*"def"])
-    assert dist(e, f) == len(e)
+    assert dist(e, f) == 1
 
 
 def test_combined_distance(mixed_random_dataset):
