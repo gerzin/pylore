@@ -9,7 +9,7 @@ from typing import Union
 def extract_decision_rule(
     dt: Union[DecisionTreeClassifier, _tree.Tree], x, features_names=None
 ) -> str:
-    """Extract the rule which leas to a particular prediction.
+    """Extract the rule which lead to a particular prediction.
 
 
     Arguments:
@@ -65,6 +65,7 @@ def extract_counterfactuals(
     rule: Union[str, list[str]],
     x,
 ):
+    """ """
     if isinstance(dt, DecisionTreeClassifier):
         dt = dt.tree_
 
